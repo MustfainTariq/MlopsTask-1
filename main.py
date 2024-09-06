@@ -1,21 +1,16 @@
-# main.py
 import numpy as np
-from sklearn.datasets import load_iris
-from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestClassifier
 import joblib
 
-# Load dataset
-data = load_iris()
-X = data.data
-y = data.target
+# Generate some dummy data
+np.random.seed(42)
+X = 2 * np.random.rand(100, 1)
+y = 4 + 3 * X + np.random.randn(100, 1)
 
-# Split data
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+# Add bias term (X0 = 1) for the intercept
+X_b = np.c_[np.ones((100, 1)), X]  # Add x0 = 1 to each instance
 
-# Train model
-model = RandomForestClassifier()
-model.fit(X_train, y_train)
+# Calculate the parameters using the Normal Equation: theta = (X^T * X)^(-1) * X^T * y
+theta_best = np.linalg.inv(X_b.T.dot(X_b)).dot(X_b.T).dot(y)
 
-# Save the model
-joblib.dump(model, 'model.joblib')
+# Save the model (theta parameters)
+joblib.dump(theta_best, 'linear_regression_model.joblib')
